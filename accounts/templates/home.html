@@ -7,6 +7,10 @@
 </head>
 <body>
     
-    hi there 
+    hi {{context.username}} 
+    <form method="POST" action="{% url "logout" %}">
+        {% csrf_token %}
+        <button type="submit">Logour</button>
+    </form>
 </body>
 </html>

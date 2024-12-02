@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.contrib.auth import login,logout,authenticate
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 class login_view(FormView):
@@ -20,9 +22,11 @@ class login_view(FormView):
     def form_invalid(self, form):
         # عرض نموذج مع الأخطاء إذا فشل التحقق
         return self.render_to_response(self.get_context_data(form=form))
-    
+@login_required  
 def home_view(request):
-    return render(request,'home.html')
+    context = {"username":request.user.username}
+    
+    return render(request,'home.html',{"context":context})
 class Register_view(FormView):
     template_name = "register_1.html"
     form_class = RegisterStep_1
@@ -41,3 +45,8 @@ class Register_view(FormView):
         
        
         return self.render_to_response(self.get_context_data(form=form))
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
