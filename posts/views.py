@@ -13,6 +13,8 @@ def CreatePost_view(request):
     if request.method == "POST":
         post_form = PostForm(data=request.POST)
         image_formset = ImageformSet(request.POST, request.FILES)
+        print(post_form)
+        print(image_formset)
 
         if post_form.is_valid() and image_formset.is_valid():
             post = post_form.save(commit=False)
@@ -27,6 +29,10 @@ def CreatePost_view(request):
 
             messages.success(request, "Post created successfully!")
         else:
+            if not image_formset.is_valid():
+                print(image_formset.errors)
+            if not post_form.is_valid():
+                print(post_form.errors)
             messages.error(request, "There was an error creating the post.")
 
     else:
