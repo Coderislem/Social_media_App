@@ -4,6 +4,8 @@ from .forms import PostForm,PostimgsForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 # Create your views here.
 
 @login_required
@@ -11,7 +13,7 @@ def CreatePost_view(request):
     ImageformSet = modelformset_factory(PostImage, form=PostimgsForm, extra=3)
 
     if request.method == "POST":
-        post_form = PostForm(data=request.POST)
+        post_form = PostForm(data=request.POST) 
         image_formset = ImageformSet(request.POST, request.FILES)
         print(post_form)
         print(image_formset)
@@ -40,3 +42,15 @@ def CreatePost_view(request):
         image_formset = ImageformSet(queryset=PostImage.objects.none())
 
     return render(request, 'CreatePost.html', {"post_form": post_form, "image_formset": image_formset})
+
+
+
+def Profile_posts(request,user_id):
+    try:
+        user = User.objects.get(id = user_id)
+    except User.DoesNotExist:
+        messages.error(request,"User not found")
+    
+    posts = Post.objects.filter(author = user)
+    return HttpResponse(request,{"posts":posts})
+

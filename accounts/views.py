@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from posts.views import Profile_posts
 # Create your views here.
 
 class login_view(FormView):
@@ -20,7 +21,7 @@ class login_view(FormView):
         login(self.request,user)
         return super().form_valid(form)
     def form_invalid(self, form):
-        # عرض نموذج مع الأخطاء إذا فشل التحقق
+       
         return self.render_to_response(self.get_context_data(form=form))
 @login_required  
 def home_view(request):
@@ -41,7 +42,7 @@ class Register_view(FormView):
         return super().form_valid(form)
     def form_invalid(self, form):
       
-        print("النموذج يحتوي على أخطاء:", form.errors)
+        print("invalid form !", form.errors)
         
        
         return self.render_to_response(self.get_context_data(form=form))
@@ -50,3 +51,10 @@ class Register_view(FormView):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+def profile(request):
+    posts = Profile_posts(request,request.user.id)
+    profile_info = Profile.objects.get(user = request.user)
+
+    return render(request,"profile.html", {"posts":posts,"profile_info":profile_info})
+
