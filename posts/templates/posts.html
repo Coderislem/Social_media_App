@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ul>
+        {% for post in posts %}
+<li>{{post.title}} </li> <a href="{% url "edit_post" post.id %}">edit</a> --<a href="{% url "delete_post" post.id %}">delete</a>
+        {% endfor %}  
+
+    </ul>
+  
+</body>
+</html>

@@ -16,7 +16,13 @@
         <p>{{post.content}} </p>
         <p>{{post.like_count}} </p>
     </legend>
-        
+        <div class="post-imgs">
+            {% for image in post.images.all %}
+            <img src="{{ image.image.url }}" alt="Image for {{ post.title }}">
+
+            
+            {% endfor %}
+        </div>
         {% endfor %}
     </div>
 </body>

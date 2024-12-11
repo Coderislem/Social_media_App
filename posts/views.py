@@ -54,9 +54,10 @@ def Profile_posts(request):
         messages.error(request,"User not found")
     
     
-    posts_with_likes = Post.objects.filter(author = user).prefetch_related("likes").annotate(like_count = Count("likes"))
+    posts_with_likes = Post.objects.filter(author = user).prefetch_related("likes","images").annotate(like_count = Count("likes"))
 
     return render(request,"profile.html",{"posts_with_likes":posts_with_likes})
+
 @login_required
 def add_like(request,post_id):
     
@@ -94,21 +95,26 @@ def edit_post(request,post_id):
         messages.error(request,"Post not found ")
     if request.method =="POST":
         post_form = PostForm(data=request.POST or None,instance=post)
-        images_form = PostImage(request.POST or None,request.FILES or None)
-        if form.is_valid() and images_form.is_valid():
+        # images_form = PostImage(request.POST or None,request.FILES or None)
+        if post_form.is_valid():
             post_form.save()
-            if 'image' in request.FILES:
-                images_post = images_form.save(commit=False)
-                images_post.post = post
-                images_post.save()
+            # if 'image' in request.FILES:
+            #     images_post = images_form.save(commit=False)
+            #     images_post.post = post
+            #     images_post.save()
                 
 
             messages.success(request,"Post updated successfully !")
-            return redirect('post_details',post_id = post.id)
+            return redirect('all_posts')
         else:
             messages.error(request,"invalid information ")
     else:
-        form = PostForm(instance=post)
-    return render(request,"edit-post.html",{"post_form":post_form,"images_form":images_form})
+        post_form = PostForm(instance=post)
+        # images_form = PostimgsForm()
+    return render(request,"edit-post.html",{"post_form":post_form})
 
 
+@login_required
+def all_posts(request):
+    Posts = Post.objects.all()
+    return render(request,"posts.html",{"posts":Posts})
