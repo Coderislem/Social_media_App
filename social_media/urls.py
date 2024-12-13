@@ -10,4 +10,5 @@ urlpatterns = [
     path('auth/', include('accounts.urls')),
     path('post/', include('posts.urls')),
     path('labery/', include('Books.urls')),
+    path('friends/',include('friends.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

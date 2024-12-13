@@ -9,6 +9,7 @@ urlpatterns = [
     path('home/',home_view,name='home'),
     path('register/',Register_view.as_view(),name="register"),
     path('logout/',LogoutView.as_view(next_page="login"),name="logout"),
-    path('profile/',Profile,name="profile")
+   
+   
 
 ]+static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
