@@ -14,13 +14,13 @@ class FriendRequest(models.Model):
         status = "Accepted" if self.accepted else "Pending"
         return f"FriendRequest from {self.sender.first_name} to {self.receiver.first_name} ({status})"
 
-class Friendship(models.Model):
-    user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friends1')
-    user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friends2')
-    created_at = models.DateTimeField(auto_now_add=True)
+# class Friendship(models.Model):
+#     profile1 = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='friends1')
+#     profile2 = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='friends2')
+#     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        unique_together = ('user1', 'user2')
+#     class Meta:
+#         unique_together = ('profile1', 'profile2')
 
-    def __str__(self):
-        return f"Friendship between {self.user1.username} and {self.user2.username}"
+#     def __str__(self):
+#         return f"Friendship between {self.profile1.first_name} and {self.profile2.first_name}"

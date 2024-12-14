@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .models import Friendship,FriendRequest
+from .models import FriendRequest
 from accounts.models import Profile
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -38,3 +38,6 @@ def FreindRequestSuggestions(request):
     all_exculded_ids = list(send_requests) + list(receiver_requests)
     profile_suggestions = Profile.objects.exclude(id__in = all_exculded_ids).exclude(id = current_profile.id)
     return render(request,'profiles.html',{"profile_suggestions":profile_suggestions})
+# def Friends(request):
+
+#     friends = Friendship.objects.filter
