@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profiles</title>
+    <title>Document</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,28 +41,24 @@
     </style>
 </head>
 <body>
-    <!-- عرض الرسائل -->
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
+      <!-- عرض الرسائل -->
+      {% if messages %}
+      <div class="messages">
+          {% for message in messages %}
+              <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                  {{ message }}
+              </div>
+          {% endfor %}
+      </div>
+  {% endif %}
+    {% for profile in friends_profile %}
+    <li>{{profile.first_name}} </li> 
+    <a href="{% url "remove" profile.id %}">remove</a>
+    {% if profile.image_profile %}
+    <img src="{{profile.image_profile.url}}" alt="img_profile">
+    {% else %}
+    <img src="" alt="null">
     {% endif %}
-
-    <!-- قائمة الملفات الشخصية -->
-     <h1>profile suggestions </h1> 
-    <ul class="profile-list">
-        {% for profile in profile_suggestions %}
-            <li class="profile-item">
-                {{ profile.first_name }} 
-                <a href="{% url 'add-friend' profile.id %}">Add Friend</a>
-            </li>
-        {% endfor %}
-    </ul>
-
-    <a href="{% url "friends" %}">friend list </a>
+    {% endfor %}
 </body>
-</html>
+</html>s
