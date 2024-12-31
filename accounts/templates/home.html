@@ -1,16 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-    hi {{context.username}} 
-    <form method="POST" action="{% url "logout" %}">
-        {% csrf_token %}
-        <button type="submit">Logour</button>
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Home - Instello{% endblock %}
+
+{% block extra_css %}
+<style>
+    .post-input {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .post-input input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .post {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .post-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .post-info {
+        flex: 1;
+    }
+
+    .post-author {
+        font-weight: bold;
+        margin-bottom: 3px;
+    }
+
+    .post-time {
+        color: #666;
+        font-size: 12px;
+    }
+
+    .post-image {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .post-actions {
+        display: flex;
+        gap: 15px;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #666;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="post-input">
+        <input type="text" placeholder="What do you have in mind?">
+    </div>
+
+    {% for post in posts %}
+        {% include 'components/post_card.html' with post=post %}
+    {% endfor %}
+{% endblock %}

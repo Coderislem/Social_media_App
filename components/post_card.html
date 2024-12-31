@@ -1,0 +1,22 @@
+
+<!-- components/post_card.html -->
+<div class="post">
+    <div class="post-header">
+        <img src="{{ post.author.avatar.url }}" class="post-avatar" alt="{{ post.author.username }} avatar">
+        <div class="post-info">
+            <div class="post-author">{{ post.author.username }}</div>
+            <div class="post-time">{{ post.created_at|timesince }} ago</div>
+        </div>
+    </div>
+    {% if post.image %}
+        <img src="{{ post.image.url }}" class="post-image" alt="Post image">
+    {% endif %}
+    <div class="post-actions">
+        <div class="action-btn">
+            ❤️ {{ post.likes_count }}
+        </div>
+        <div class="action-btn">
+            💬 {{ post.comments_count }}
+        </div>
+    </div>
+</div>
