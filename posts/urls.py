@@ -1,11 +1,29 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import CreatePost_view,Profile_posts,add_like,edit_post,all_posts,remove_post
+from .views import (
+    create_post,
+    update_post,
+    delete_post,
+    post_detail,
+    add_like,
+    Profile_posts,
+    all_posts
+)
+
 urlpatterns = [
-    path('new/',CreatePost_view,name="new_post"),
-    path('profile/',Profile_posts,name="profile"),
-    path("edit/<int:post_id>/",edit_post,name="edit_post"),
-    path("delete/<int:post_id>/",remove_post,name="delete_post"),
-    path("all/",all_posts,name="all_posts")
-]+static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
+    # Post CRUD
+    path('create/', create_post, name='create_post'),
+    path('post/<int:pk>/', post_detail, name='post_detail'),
+    path('post/<int:pk>/edit/', update_post, name='update_post'),
+    path('post/<int:pk>/delete/', delete_post, name='delete_post'),
+    
+    # Likes
+    path('post/<int:pk>/like/', add_like, name='add_like'),
+    
+    # Lists
+    path('profile/', Profile_posts, name='profile'),
+    path('all/', all_posts, name='all_posts'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+

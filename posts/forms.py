@@ -1,18 +1,15 @@
-from .models import Post,PostImage
+from .models import Post
 from django import forms
 
 
 class PostForm(forms.ModelForm):
-    title = forms.CharField(label="Enter post title :")
-    content = forms.Textarea()
-
     class Meta:
         model = Post
-        fields = ["title","content"]
+        fields = ['content', 'image']
         
 
-class PostimgsForm(forms.ModelForm):
-    image = forms.ImageField()
-    class Meta:
-        model = PostImage
-        fields = ["image"]
+# class PostimgsForm(forms.ModelForm):
+#     image = forms.ImageField()
+#     class Meta:
+#         model = PostImage
+#         fields = ["image"]

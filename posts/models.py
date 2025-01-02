@@ -9,17 +9,18 @@ class Post(models.Model):
     content = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    image = models.ImageField(upload_to='post_images/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.title or 'Untitled Post'} by {self.author.username}"
 
-class PostImage(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='post_images/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+# class PostImage(models.Model):
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
+#     image = models.ImageField(upload_to='post_images/')
+#     uploaded_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Image for {self.post.title or 'Untitled Post'}"    
+#     def __str__(self):
+#         return f"Image for {self.post.title or 'Untitled Post'}"    
 
 class Like(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
