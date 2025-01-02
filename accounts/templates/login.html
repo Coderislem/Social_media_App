@@ -1,38 +1,42 @@
 <!-- templates/accounts/login.html -->
 
-{% load static %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/auth.css' %}">
-{% endblock %}
-
-{% block content %}
-<div class="auth-container">
-    <div class="auth-card">
-        <h1 class="auth-title">Login</h1>
-        <form method="post">
-            {% csrf_token %}
-            {% if form.errors %}
-            <div class="error-message">Invalid credentials</div>
-            {% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Login</h1>
+            <form method="post">
+                {% csrf_token %}
+                {% if form.errors %}
+                <div class="error-message">Invalid credentials</div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <label class="form-label" for="identifier">Username or Email</label>
+                    <input type="text" id="identifier" name="identifier" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+                
+                <button type="submit" class="auth-button">Login</button>
+            </form>
             
-            <div class="form-group">
-                <label class="form-label" for="username">Username</label>
-                <input type="text" id="username" name="username" class="form-input">
+            <div class="form-footer">
+                Don't have an account? 
+                <a href="{% url 'register' %}" class="auth-link">Sign Up</a>
             </div>
-            
-            <div class="form-group">
-                <label class="form-label" for="password">Password</label>
-                <input type="password" id="password" name="password" class="form-input">
-            </div>
-            
-            <button type="submit" class="auth-button">Login</button>
-        </form>
-        
-        <div class="form-footer">
-            Don't have an account? 
-            <a href="{% url 'register' %}" class="auth-link">Sign Up</a>
         </div>
     </div>
-</div>
-{% endblock %}
+</body>
+</html>
