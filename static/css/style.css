@@ -1,0 +1,48 @@
+.feed-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.post {
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.like-btn.active {
+    color: #ed4956;
+    fill: #ed4956;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    min-width: 120px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    padding: 8px 12px;
+    display: block;
+    font-size: 14px;
+    color: #333;
+}
+
+.dropdown-content a:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}

@@ -1,0 +1,147 @@
+<!-- templates/posts/post_list.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .feed-container {
+        max-width: 680px;
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+
+    .post {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .post-header {
+        padding: 15px;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    .post-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .post-content {
+        padding: 15px;
+    }
+
+    .post-actions {
+        padding: 10px 15px;
+        border-top: 1px solid #f1f1f1;
+        display: flex;
+        gap: 15px;
+    }
+
+    .rounded-full {
+        border-radius: 50%;
+    }
+
+    .w-10 {
+        width: 2.5rem;
+    }
+
+    .h-10 {
+        height: 2.5rem;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    .items-center {
+        align-items: center;
+    }
+
+    .gap-3 {
+        gap: 0.75rem;
+    }
+
+    .font-semibold {
+        font-weight: 600;
+    }
+
+    .text-sm {
+        font-size: 0.875rem;
+    }
+
+    .text-xs {
+        font-size: 0.75rem;
+    }
+
+    .text-gray-500 {
+        color: #6b7280;
+    }
+
+    .bg-white {
+        background-color: white;
+    }
+
+    .shadow {
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="feed-container">
+    <!-- Stories Section -->
+    <div class="stories-container mb-4">
+        <div class="stories-wrapper bg-white rounded-xl shadow p-4">
+            <!-- Add stories later -->
+        </div>
+    </div>
+
+    <!-- Posts Feed -->
+    <div class="posts-container space-y-4">
+        {% for post in posts %}
+        <div class="post bg-white rounded-xl shadow">
+            <!-- Post Header -->
+            <div class="post-header flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-3">
+                    <a href="#">
+                        {% if post.user.profile.image_profile %}
+                            <img src="{{ post.user.profile.image_profile.url }}" class="rounded-full w-10 h-10" alt="{{ post.user.username }}">
+                        {% else %}
+                            <img src="{% static 'images/default-avatar-icon-of-social-media-user-vector.jpg' %}" class="rounded-full w-10 h-10" alt="Default avatar">
+                        {% endif %}
+                    </a>
+                    <div>
+                        <a href="#" class="font-semibold text-sm">
+                            {{ post.user.username }}
+                        </a>
+                        <div class="text-xs text-gray-500">{{ post.created_at|timesince }} ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post Image -->
+            {% if post.image %}
+            <div class="post-image">
+                <img src="{{ post.image.url }}" alt="Post image" class="w-full">
+            </div>
+            {% endif %}
+
+            <!-- Post Content -->
+            <div class="post-content px-4 py-2">
+                <p>{{ post.content }}</p>
+            </div>
+
+            <!-- Post Actions -->
+            <div class="post-actions">
+                <button class="like-btn">❤️</button>
+                <button class="comment-btn">💬</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}
+

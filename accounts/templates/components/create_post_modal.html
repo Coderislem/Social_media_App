@@ -1,0 +1,20 @@
+<!-- templates/components/create_post_modal.html -->
+<div id="createPostModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Create New Post</h2>
+        <form method="POST" action="{% url 'create_post' %}" enctype="multipart/form-data" id="createPostForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="content">Caption</label>
+                <textarea name="content" id="content" class="form-input" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" name="image" id="image" accept="image/*" required>
+                <div id="imagePreview"></div>
+            </div>
+            <button type="submit" class="submit-btn">Share</button>
+        </form>
+    </div>
+</div>

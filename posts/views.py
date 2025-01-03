@@ -5,21 +5,26 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.db.models import Count
 
 @login_required
 def create_post(request):
     if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.user = request.user
-            post.save()
-            return redirect('home')
-    else:
-        form = PostForm()
-    return render(request, 'posts/create_post.html', {'form': form})
+        try:
+            post = Post.objects.create(
+                user=request.user,
+                content=request.POST.get('content'),
+                image=request.FILES.get('image')
+            )
+            return JsonResponse({'success': True})
+        except Exception as e:
+            print(str(e))  # Debug
+            return JsonResponse({
+                'success': False, 
+                'error': str(e)
+            })
+    return JsonResponse({'success': False})
 
 @login_required
 def update_post(request, pk):
@@ -87,3 +92,8 @@ def remove_post(request, post_id):
 def all_posts(request):
     Posts = Post.objects.all()
     return render(request, "posts.html", {"posts": Posts})
+
+@login_required
+def post_list(request):
+    posts = Post.objects.select_related('user').prefetch_related('likes').order_by('-created_at')
+    return render(request, 'post_list.html', {'posts': posts})

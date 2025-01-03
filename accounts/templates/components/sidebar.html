@@ -21,7 +21,7 @@
             <i>👥</i>
             People
         </a>
-        <a href="" class="nav-item">
+        <a href="#" class="nav-item" id="createPostBtn">
             <i>➕</i>
             Create
         </a>
@@ -31,3 +31,111 @@
         </a>
     </nav>
 </div>
+
+<div id="createPostModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Create New Post</h2>
+        <form method="POST" action="{% url 'create_post' %}" enctype="multipart/form-data" id="createPostForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="content">Caption</label>
+                <textarea name="content" id="content" class="form-input" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" name="image" id="image" accept="image/*" required>
+                <div id="imagePreview"></div>
+            </div>
+            <button type="submit" class="submit-btn">Share</button>
+        </form>
+    </div>
+</div>
+
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('createPostModal');
+    const btn = document.getElementById('createPostBtn');
+    const close = document.querySelector('.close');
+    const form = document.getElementById('createPostForm');
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('imagePreview');
+
+    btn.onclick = function(e) {
+        e.preventDefault();
+        modal.style.display = "block";
+    }
+
+    close.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(e) {
+        if (e.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Image preview
+    imageInput.onchange = function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.style.backgroundImage = `url(${e.target.result})`;
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Form submit
+    form.onsubmit = async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                modal.style.display = "none";
+                form.reset();
+                imagePreview.style.backgroundImage = '';
+                window.location.reload();
+            } else {
+                alert(data.error || 'Error creating post');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+});
+</script>

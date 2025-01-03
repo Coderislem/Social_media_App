@@ -8,12 +8,13 @@ from .views import (
     post_detail,
     add_like,
     Profile_posts,
-    all_posts
+    all_posts,
+    post_list
 )
 
 urlpatterns = [
     # Post CRUD
-    path('create/', create_post, name='create_post'),
+    path('create/',create_post, name='create_post'),
     path('post/<int:pk>/', post_detail, name='post_detail'),
     path('post/<int:pk>/edit/', update_post, name='update_post'),
     path('post/<int:pk>/delete/', delete_post, name='delete_post'),
@@ -24,6 +25,7 @@ urlpatterns = [
     # Lists
     path('profile/', Profile_posts, name='profile'),
     path('all/', all_posts, name='all_posts'),
+    path('', post_list, name='post_list'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
