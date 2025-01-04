@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def profiles_view(request):
@@ -60,4 +61,37 @@ def remove_friend(request,id):
     friend_ship = get_friend(request,id)
     friend_ship.delete()
     messages.success(request,"friend delete successfully !")
-    return redirect(request.META.get('HTTP_REFERER', '/') ) 
+    return redirect(request.META.get('HTTP_REFERER', '/') )
+
+@login_required
+def people_list(request):
+    # Get current user's profile
+    user_profile = request.user.profile
+    
+    # Get all friendships where user is involved
+    friendships = Friendship.objects.filter(
+        Q(profile1=user_profile) | 
+        Q(profile2=user_profile)
+    )
+    
+    # Get friend profiles
+    friend_profiles = set()
+    for friendship in friendships:
+        if friendship.profile1 == user_profile:
+            friend_profiles.add(friendship.profile2)
+        else:
+            friend_profiles.add(friendship.profile1)
+            
+    # Get sent friend requests
+    sent_requests = FriendRequest.objects.filter(sender=user_profile).values_list('receiver', flat=True)
+    
+    # Get all profiles except friends and self
+    people = Profile.objects.exclude(
+        id__in=[p.id for p in friend_profiles]
+    ).exclude(
+        id=user_profile.id
+    ).exclude(
+        id__in=sent_requests
+    )
+    
+    return render(request, 'friends/people.html', {'people': people})

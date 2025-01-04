@@ -1,7 +1,7 @@
 <div class="sidebar">
     <div class="logo">Instello</div>
     <nav>
-        <a href="{% url 'home' %}" class="nav-item">
+        <a href="{% url 'post_list' %}" class="nav-item">
             <i>🏠</i>
             Home
         </a>
@@ -17,7 +17,7 @@
             <i>🔔</i>
             Notifications
         </a>
-        <a href="" class="nav-item">
+        <a href="{% url "people_list" %}" class="nav-item">
             <i>👥</i>
             People
         </a>
@@ -28,6 +28,10 @@
         <a href="" class="nav-item">
             <i>👤</i>
             Profile
+        </a>
+        <a href="{% url 'logout' %}" class="nav-item">
+            <i>🚪</i>
+            Logout
         </a>
     </nav>
 </div>

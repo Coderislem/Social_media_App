@@ -88,12 +88,19 @@ def remove_post(request, post_id):
         messages.error(request, f"an error :{str(e)}")
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
-@login_required
-def all_posts(request):
-    Posts = Post.objects.all()
-    return render(request, "posts.html", {"posts": Posts})
 
 @login_required
 def post_list(request):
     posts = Post.objects.select_related('user').prefetch_related('likes').order_by('-created_at')
     return render(request, 'post_list.html', {'posts': posts})
+
+@login_required
+def like_post(request, post_id):
+    if request.method == 'POST':
+        post = get_object_or_404(Post, id=post_id)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+        
+        if not created:
+            like.delete()
+            
+        return redirect(request.META.get('HTTP_REFERER', 'post_list'))

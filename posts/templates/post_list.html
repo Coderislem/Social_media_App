@@ -5,14 +5,14 @@
 {% block extra_css %}
 <style>
     .feed-container {
-        max-width: 680px;
-        margin: 20px auto;
-        padding: 0 15px;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
     }
 
     .post {
         background: white;
-        border-radius: 10px;
+        border-radius: 8px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         margin-bottom: 20px;
         overflow: hidden;
@@ -87,10 +87,81 @@
     .shadow {
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
+
+    .like-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        font-size: 16px;
+    }
+
+    .like-btn.active {
+        color: #ed4956;
+    }
+
+    .comment-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        font-size: 16px;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        margin: 15% auto;
+        padding: 20px;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 10px;
+        position: relative;
+    }
+
+    .close {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        font-size: 28px;
+        cursor: pointer;
+    }
+
+    .comment-input {
+        width: 100%;
+        height: 100px;
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        resize: none;
+    }
+
+    .submit-btn {
+        background: #0095f6;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
+{% csrf_token %}
 <div class="feed-container">
     <!-- Stories Section -->
     <div class="stories-container mb-4">
@@ -136,12 +207,104 @@
 
             <!-- Post Actions -->
             <div class="post-actions">
-                <button class="like-btn">❤️</button>
-                <button class="comment-btn">💬</button>
+                <form method="POST" action="{% url 'like_post' post.id %}" class="like-form">
+                    {% csrf_token %}
+                    <button type="submit" class="like-btn {% if user in post.likes.all %}active{% endif %}">
+                        ❤️ <span class="likes-count">{{ post.likes.count }}</span>
+                    </button>
+                </form>
+                <a href="{% url 'post_comments' post.id %}" class="comment-btn">💬</a>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
+
+<div id="commentModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Add Comment</h2>
+        <form method="POST" id="commentForm">
+            {% csrf_token %}
+            <textarea name="content" class="comment-input" placeholder="Write a comment..." required></textarea>
+            <button type="submit" class="submit-btn">Post</button>
+        </form>
+    </div>
+</div>
 {% endblock content %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const likeIcons = document.querySelectorAll('.like-icon');
+    
+    likeIcons.forEach(icon => {
+        icon.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const postId = this.dataset.postId;
+            const button = this.closest('.like-btn');
+            
+            try {
+                const response = await fetch(`/post/${postId}/like/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    const likesCount = button.querySelector('.likes-count');
+                    likesCount.textContent = data.likes_count;
+                    button.classList.toggle('active');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+});
+
+let currentPostId = null;
+const modal = document.getElementById('commentModal');
+const form = document.getElementById('commentForm');
+
+function openCommentModal(postId) {
+    currentPostId = postId;
+    modal.style.display = "block";
+    form.action = `/post/${postId}/comment/add/`;
+}
+
+document.querySelector('.close').onclick = function() {
+    modal.style.display = "none";
+}
+
+window.onclick = function(e) {
+    if (e.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+form.onsubmit = async function(e) {
+    e.preventDefault();
+    
+    try {
+        const response = await fetch(this.action, {
+            method: 'POST',
+            body: new FormData(this),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            modal.style.display = "none";
+            this.reset();
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+</script>
 
