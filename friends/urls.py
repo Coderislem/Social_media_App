@@ -9,7 +9,7 @@ people_list
 )
 urlpatterns = [
     path('profiles/',FreindRequestSuggestions,name="profiles"),
-    path('add-friend/<int:reciver_id>/',add_friend,name="add-friend"),
+    path('add-friend/<int:reciver_id>/',add_friend,name="send_friend_request"),
     path('friends',Friends,name="friends"),
     path('remove/<int:id>/',remove_friend,name="remove"),
     path('people/',people_list, name='people_list'),

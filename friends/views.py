@@ -94,4 +94,4 @@ def people_list(request):
         id__in=sent_requests
     )
     
-    return render(request, 'friends/people.html', {'people': people})
+    return render(request, 'people.html', {'people': people})

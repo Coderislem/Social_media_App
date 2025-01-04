@@ -18,7 +18,7 @@ def login_view(request):
         if form.is_valid():
             user = form.cleaned_data['user']
             login(request, user)
-            return redirect('home')
+            return redirect('post_list')
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
