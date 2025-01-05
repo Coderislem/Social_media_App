@@ -31,22 +31,26 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'Books',
-    'accounts',
-    'comments',
-    'friends',
-    'notifications',
-    'posts',
-    'messages_',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Local apps - use AppConfig
+    'accounts.apps.AccountsConfig',  # Change this line
+    'posts',
+    'comments',
+    'friends',
+    'notifications',
+    'messages_',
+    'Books',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Add this at the top
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -126,7 +130,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'static'
+    BASE_DIR / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
@@ -141,3 +145,7 @@ MEDIA_URL = '/media/'
 import os
 
 MEDIA_ROOT =os.path.join(BASE_DIR,'media')
+
+# Add CORS settings
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True

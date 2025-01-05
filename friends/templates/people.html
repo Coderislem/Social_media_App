@@ -11,11 +11,13 @@
             {% for person in people %}
             <div class="person-card">
                 <div class="card-header">
+                    <a href="{% url "user_profile" person.user.id %}">
                     {% if person.image_profile %}
                         <img src="{{ person.image_profile.url }}" class="profile-pic" alt="{{ person.user.username }}">
                     {% else %}
                         <img src="{% static 'images/default-avatar-icon-of-social-media-user-vector.jpg' %}" class="profile-pic" alt="Default avatar">
                     {% endif %}
+                </a>
                 </div>
                 <div class="card-body">
                     <h3 class="username">{{ person.user.username }}</h3>

@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from posts.models import Post
 # Create your views here.
 
 def profiles_view(request):
@@ -95,3 +96,35 @@ def people_list(request):
     )
     
     return render(request, 'people.html', {'people': people})
+
+@login_required
+def user_profile(request, profile_id):
+    # Get profile directly using ID
+    profile = get_object_or_404(Profile, id=profile_id)
+    user = profile.user
+    posts = Post.objects.filter(user=user).order_by('-created_at')
+    
+    # Get user's friends
+    friendships = Friendship.objects.filter(
+        Q(profile1=profile) | Q(profile2=profile)
+    )
+    friends = []
+    for friendship in friendships:
+        if friendship.profile1 == profile:
+            friends.append(friendship.profile2)
+        else:
+            friends.append(friendship.profile1)
+    
+    print(f"Debug - Profile ID: {profile_id}")
+    print(f"Debug - Profile: {profile}")
+    print(f"Debug - Posts count: {posts.count()}")
+    print(f"Debug - Friends count: {len(friends)}")
+    
+    context = {
+        'profile': profile,
+        'posts': posts,
+        'friends': friends
+    }
+    
+    # Change template path to match your directory structure
+    return render(request, 'profile.html', context)
