@@ -187,6 +187,17 @@ def reject_friend_request(request, request_id):
         friend_request.delete()
         messages.info(request, f'Friend request from {friend_request.sender.user.username} rejected')
         return redirect('people_list')
+
+@login_required
+def search_profiles(request):
+    query = request.GET.get('q')
+    profiles = Profile.objects.filter(
+        Q(user__username__icontains=query) |
+        Q(first_name__icontains=query) |
+        Q(last_name__icontains=query)
+    ) if query else []
+    
+    return render(request, 'search_results.html', {'profiles': profiles, 'query': query})
 # @login_required
 # def friends(request):
 #     profile = request.user.profile

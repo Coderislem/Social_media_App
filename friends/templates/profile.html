@@ -2,15 +2,6 @@
 {% load static %}
 
 {% block content %}
-{% if debug %}
-    <div style="background: #eee; padding: 10px; margin: 10px;">
-        <p>Debug Info:</p>
-        <p>Profile ID: {{ profile.id }}</p>
-        <p>Username: {{ profile.user.username }}</p>
-        <p>Posts Count: {{ posts|length }}</p>
-    </div>
-{% endif %}
-
 <div class="profile-container">
     <div class="profile-header">
         <div class="profile-cover"></div>
@@ -144,23 +135,31 @@
     gap: 20px;
 }
 
-.friends-grid, .posts-grid {
-    display: grid;
-    gap: 10px;
+.friends-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .friends-grid {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-}
-
-.posts-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
 }
 
 .friend-card {
     text-align: center;
     text-decoration: none;
     color: inherit;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px;
+    transition: background 0.2s;
+}
+
+.friend-card:hover {
+    background: #e9ecef;
 }
 
 .friend-card img {
@@ -168,6 +167,26 @@
     height: 60px;
     border-radius: 50%;
     margin-bottom: 5px;
+}
+
+.friend-card span {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+.posts-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
 }
 
 .post-card {
@@ -190,6 +209,21 @@
 .post-date {
     font-size: 12px;
     color: #666;
+}
+
+.add-friend-btn {
+    background: #0095f6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 15px;
+}
+
+.add-friend-btn:hover {
+    background: #0074cc;
 }
 
 @media (max-width: 768px) {
