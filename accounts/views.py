@@ -31,11 +31,11 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-def profile(request):
-    posts = Profile_posts(request, request.user.id)
-    profile_info = Profile.objects.get(user=request.user)
+# def profile(request):
+#     posts = Profile_posts(request, request.user.id)
+#     profile_info = Profile.objects.get(user=request.user)
 
-    return render(request, "profile.html", {"posts": posts, "profile_info": profile_info})
+#     return render(request, "profile.html", {"posts": posts, "profile_info": profile_info})
 
 from django.urls import reverse
 

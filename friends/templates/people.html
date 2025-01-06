@@ -4,6 +4,69 @@
 
 {% block content %}
 <div class="people-container">
+    <!-- Friend Requests Section -->
+    {% if friend_requests %}
+    <div class="requests-section">
+        <h2 class="section-title">Friend Requests</h2>
+        <div class="requests-grid">
+            {% for request in friend_requests %}
+            <div class="request-card">
+                <div class="card-header">
+                    <a href="{% url 'user_profile' request.sender.user.username %}">
+                        {% if request.sender.image_profile %}
+                            <img src="{{ request.sender.image_profile.url }}" class="profile-pic" alt="{{ request.sender.user.username }}">
+                        {% else %}
+                            <img src="{% static 'images/default-avatar-icon-of-social-media-user-vector.jpg' %}" class="profile-pic" alt="Default avatar">
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="card-body">
+                    <h3 class="username">{{ request.sender.user.username }}</h3>
+                    <div class="request-actions">
+                        <form method="POST" action="{% url 'accept_friend_request' request.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="accept-btn">Accept</button>
+                        </form>
+                        <form method="POST" action="{% url 'reject_friend_request' request.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="reject-btn">Reject</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% comment %} start friends section {% endcomment %}
+<h2 class="section-title">Friends</h2>
+<div class="people-scroll">
+    <div class="people-grid">
+        {% for friend in  friends %}
+        <div class="person-card">
+            <div class="card-header">
+                <a href="{% url "user_profile" friend.user.username %}">
+                    {% if friend.image_profile %}
+                    <img src="{{ friend.image_profile.url }}" class="profile-pic" alt="{{ friend.user.username }}">
+                    {% else %}
+                    <img src="{% static 'images/default-avatar-icon-of-social-media-user-vector.jpg' %}" class="profile-pic" alt="Default avatar">
+                    {% endif %}
+                </a>
+
+            </div>
+            <div class="card-body">
+                <h3 class="username">{{ friend.user.username }}</h3>
+                <form method="POST" action="{% url 'start_conversation' friend.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="add-friend-btn">message</button>
+                </form/>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+    {% comment %} end friends {% endcomment %}
+    <!-- People Suggestions Section -->
     <h2 class="section-title">People you may know</h2>
     
     <div class="people-scroll">
@@ -11,7 +74,7 @@
             {% for person in people %}
             <div class="person-card">
                 <div class="card-header">
-                    <a href="{% url "user_profile" person.user.id %}">
+                    <a href="{% url "user_profile" person.user.username %}">
                     {% if person.image_profile %}
                         <img src="{{ person.image_profile.url }}" class="profile-pic" alt="{{ person.user.username }}">
                     {% else %}
@@ -145,6 +208,51 @@
     background: white;
     border-radius: 6px;
     font-size: 0.875rem;
+}
+
+/* Add to existing styles */
+.requests-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.requests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.request-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.request-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.accept-btn {
+    background: #0095f6;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.reject-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 </style>
 {% endblock %}

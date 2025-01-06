@@ -1,0 +1,186 @@
+<!-- templates/messages/conversations.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="conversations-container">
+    <div class="conversations-header">
+        <h1>Chats</h1>
+        <a href="{% url 'friends_messages' %}" class="new-message-btn">
+            <i class="fa fa-edit">new</i>
+        </a>
+    </div>
+    
+    <div class="conversations-list">
+        {% for conversation in conversations %}
+        <a href="{% url 'conversation_detail' conversation.id %}" class="conversation-item">
+            {% for participant in conversation.participants.all %}
+                {% if participant != request.user %}
+                    <div class="conversation-preview">
+                        <div class="user-avatar">
+                            {% if participant.profile.image_profile %}
+                                <img src="{{ participant.profile.image_profile.url }}" alt="{{ participant.username }}">
+                            {% else %}
+                                <img src="{% static 'images/default-avatar-icon-of-social-media-user-vector.jpg' %}" alt="Default avatar">
+                            {% endif %}
+                        </div>
+                        <div class="conversation-info">
+                            <div class="conversation-header">
+                                <h3>{{ participant.username }}</h3>
+                                {% if conversation.messages.last %}
+                                    <span class="time">{{ conversation.messages.last.created_at|timesince }} ago</span>
+                                {% endif %}
+                            </div>
+                            <p class="last-message">
+                                {% if conversation.messages.last %}
+                                    {% if conversation.messages.last.sender == request.user %}
+                                        <span class="you">You: </span>
+                                    {% endif %}
+                                    {{ conversation.messages.last.content|truncatechars:40 }}
+                                {% else %}
+                                    <span class="no-messages">No messages yet</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </a>
+        {% empty %}
+        <div class="no-conversations">
+            <p>No conversations yet</p>
+            <a href="{% url 'friends_messages' %}" class="start-chat-btn">Start a Chat</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.conversations-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    min-height: 100vh;
+}
+
+.conversations-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+.conversations-header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #262626;
+}
+
+.new-message-btn {
+    background: none;
+    border: none;
+    color: #0095f6;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.conversations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.conversation-item {
+    padding: 15px;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s;
+}
+
+.conversation-item:hover {
+    background-color: #f8f9fa;
+}
+
+.conversation-preview {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.conversation-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.conversation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+}
+
+.conversation-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    color: #262626;
+}
+
+.time {
+    font-size: 12px;
+    color: #8e8e8e;
+}
+
+.last-message {
+    font-size: 14px;
+    color: #8e8e8e;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.you {
+    color: #262626;
+    font-weight: 500;
+}
+
+.no-messages {
+    color: #8e8e8e;
+    font-style: italic;
+}
+
+.no-conversations {
+    text-align: center;
+    padding: 40px 20px;
+    color: #8e8e8e;
+}
+
+.start-chat-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 16px;
+    background: #0095f6;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+}
+</style>
+{% endblock %}

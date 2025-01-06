@@ -2,6 +2,200 @@
 {% load static %}
 
 {% block content %}
+{% if debug %}
+    <div style="background: #eee; padding: 10px; margin: 10px;">
+        <p>Debug Info:</p>
+        <p>Profile ID: {{ profile.id }}</p>
+        <p>Username: {{ profile.user.username }}</p>
+        <p>Posts Count: {{ posts|length }}</p>
+    </div>
+{% endif %}
 
-<h1>hello world </h1>
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-cover"></div>
+        <div class="profile-info">
+            <div class="profile-avatar">
+                {% if profile.image_profile %}
+                    <img src="{{ profile.image_profile.url }}" alt="{{ profile.user.username }}">
+                {% else %}
+                    <img src="{% static 'images/default-avatar-icon-of-social-media-user-vector.jpg' %}" alt="Default avatar">
+                {% endif %}
+            </div>
+            <div class="profile-details">
+                <h1>{{ profile.user.username }}</h1>
+                {% if profile.first_name or profile.last_name %}
+                    <h2>{{ profile.first_name }} {{ profile.last_name }}</h2>
+                {% endif %}
+                {% if profile.bio %}
+                    <p class="bio">{{ profile.bio }}</p>
+                {% endif %}
+            </div>
+            {% if request.user != profile.user %}
+                <div class="profile-actions">
+                    <form method="POST" action="{% url 'send_friend_request' profile.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="add-friend-btn">Add Friend</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <div class="friends-section">
+            <h3>Friends <span>({{ friends|length }})</span></h3>
+            <div class="friends-grid">
+                {% for friend in friends %}
+                <a href="{% url 'user_profile' friend.user.username %}" class="friend-card">
+                    {% if friend.image_profile %}
+                    <img src="{{ friend.image_profile.url }}" alt="{{ friend.user.username }}">
+                {% else %}
+                    <img src="{% static 'images/default-avatar-icon-of-social-media-user-vector.jpg' %}" alt="Default avatar">
+                {% endif %}
+                    <span>{{ friend.user.username }}</span>
+                </a>
+                {% empty %}
+                <p>No friends yet</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="posts-section">
+            <h3>Posts</h3>
+            <div class="posts-grid">
+                {% for post in posts %}
+                <div class="post-card">
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="Post image">
+                    {% endif %}
+                    <div class="post-info">
+                        <p>{{ post.content|truncatechars:100 }}</p>
+                        <span class="post-date">{{ post.created_at|timesince }} ago</span>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No posts yet</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.profile-header {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.profile-cover {
+    height: 200px;
+    background: linear-gradient(45deg, #0095f6, #00d6f6);
+}
+
+.profile-info {
+    padding: 20px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+}
+
+.profile-avatar {
+    margin-top: -80px;
+}
+
+.profile-avatar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-details h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.profile-details h2 {
+    font-size: 18px;
+    color: #666;
+    margin: 5px 0;
+}
+
+.bio {
+    margin-top: 10px;
+    color: #444;
+}
+
+.profile-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.friends-grid, .posts-grid {
+    display: grid;
+    gap: 10px;
+}
+
+.friends-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+}
+
+.posts-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.friend-card {
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.friend-card img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-bottom: 5px;
+}
+
+.post-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.post-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.post-info {
+    padding: 10px;
+}
+
+.post-date {
+    font-size: 12px;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .profile-content {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 {% endblock %}

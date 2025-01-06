@@ -26,7 +26,7 @@ urlpatterns = [
     path('like/<int:post_id>/', like_post, name='like_post'),
     
     # Lists
-    path('profile/', Profile_posts, name='profile'),
+    # path('profile/', Profile_posts, name='profile'),
    
     path('home/', post_list, name='post_list'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,8 +1,7 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from .models import FriendRequest,Friendship
 from accounts.models import Profile
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -66,16 +65,20 @@ def remove_friend(request,id):
 
 @login_required
 def people_list(request):
-    # Get current user's profile
     user_profile = request.user.profile
     
-    # Get all friendships where user is involved
+    # Get friend requests
+    received_requests = FriendRequest.objects.filter(
+        receiver=user_profile,
+        accepted=False
+    ).select_related('sender')
+    
+    # Original people suggestions logic
     friendships = Friendship.objects.filter(
         Q(profile1=user_profile) | 
         Q(profile2=user_profile)
     )
     
-    # Get friend profiles
     friend_profiles = set()
     for friendship in friendships:
         if friendship.profile1 == user_profile:
@@ -83,10 +86,8 @@ def people_list(request):
         else:
             friend_profiles.add(friendship.profile1)
             
-    # Get sent friend requests
     sent_requests = FriendRequest.objects.filter(sender=user_profile).values_list('receiver', flat=True)
     
-    # Get all profiles except friends and self
     people = Profile.objects.exclude(
         id__in=[p.id for p in friend_profiles]
     ).exclude(
@@ -95,13 +96,16 @@ def people_list(request):
         id__in=sent_requests
     )
     
-    return render(request, 'people.html', {'people': people})
+    return render(request, 'people.html', {
+        'people': people,
+        'friend_requests': received_requests,
+        'friends':friend_profiles
+    })
 
 @login_required
-def user_profile(request, profile_id):
-    # Get profile directly using ID
-    profile = get_object_or_404(Profile, id=profile_id)
-    user = profile.user
+def user_profile(request, username):
+    user = get_object_or_404(User, username=username)
+    profile = user.profile
     posts = Post.objects.filter(user=user).order_by('-created_at')
     
     # Get user's friends
@@ -114,17 +118,83 @@ def user_profile(request, profile_id):
             friends.append(friendship.profile2)
         else:
             friends.append(friendship.profile1)
-    
-    print(f"Debug - Profile ID: {profile_id}")
-    print(f"Debug - Profile: {profile}")
-    print(f"Debug - Posts count: {posts.count()}")
-    print(f"Debug - Friends count: {len(friends)}")
-    
-    context = {
+            
+    return render(request, 'profile.html', {
         'profile': profile,
         'posts': posts,
         'friends': friends
-    }
+    })
+
+
+def my_profile(request):
+    profile = request.user.profile
+    posts = Post.objects.filter(user = request.user)
+    friendships = Friendship.objects.filter(
+        Q(profile1=profile) | Q(profile2=profile)
+    )
+    friends = []
+    for friendship in friendships:
+        if friendship.profile1 == profile:
+            friends.append(friendship.profile2)
+        else:
+            friends.append(friendship.profile1)
+    return render(request,'profile.html',{
+        'profile':profile,
+        'posts':posts,
+        'friends':friends
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required
+def accept_friend_request(request, request_id):
+    friend_request = get_object_or_404(FriendRequest, id=request_id, receiver=request.user.profile)
     
-    # Change template path to match your directory structure
-    return render(request, 'profile.html', context)
+    if request.method == 'POST':
+        # Create friendship
+        Friendship.objects.create(
+            profile1=friend_request.sender,
+            profile2=friend_request.receiver
+        )
+        
+        # Mark request as accepted
+        friend_request.accepted = True
+        friend_request.save()
+        
+        messages.success(request, f'You are now friends with {friend_request.sender.user.username}')
+        return redirect('people_list')
+
+@login_required
+def reject_friend_request(request, request_id):
+    friend_request = get_object_or_404(FriendRequest, id=request_id, receiver=request.user.profile)
+    
+    if request.method == 'POST':
+        friend_request.delete()
+        messages.info(request, f'Friend request from {friend_request.sender.user.username} rejected')
+        return redirect('people_list')
+# @login_required
+# def friends(request):
+#     profile = request.user.profile
+#     friendshipts = Friendship.objects.filter(Q(profile1 = profile) or Q(profile2=profile))
+#     friends = []
+#     for friendshipt in friendshipts:
+#         if friendshipt.profile1 == profile:
+#             friends.append(friendshipt.profile2)
+#         elif friendshipt.profile2 == profile:
+#             friends.append(friendshipt.profile1)
+#     return render(request,)
