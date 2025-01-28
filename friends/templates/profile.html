@@ -22,14 +22,18 @@
                     <p class="bio">{{ profile.bio }}</p>
                 {% endif %}
             </div>
-            {% if request.user != profile.user %}
-                <div class="profile-actions">
-                    <form method="POST" action="{% url 'send_friend_request' profile.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="add-friend-btn">Add Friend</button>
-                    </form>
-                </div>
-            {% endif %}
+            <div class="profile-actions">
+                {% if request.user.is_authenticated %}
+                    {% if request.user == profile.user %}
+                        <a href="{% url 'edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
+                    {% else %}
+                        <form method="POST" action="{% url 'send_friend_request' profile.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="add-friend-btn">Add Friend</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -224,6 +228,29 @@
 
 .add-friend-btn:hover {
     background: #0074cc;
+}
+
+.profile-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.edit-profile-btn {
+    display: inline-block;
+    background: #262626;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.edit-profile-btn:hover {
+    background: #404040;
 }
 
 @media (max-width: 768px) {

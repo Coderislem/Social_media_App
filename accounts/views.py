@@ -49,3 +49,23 @@ def register_view(request):
         form = RegisterForm()
     return render(request, 'register_1.html', {'form': form})
 
+@login_required
+def edit_profile(request):
+    profile = request.user.profile
+    
+    if request.method == 'POST':
+        # Handle profile update
+        profile.first_name = request.POST.get('first_name')
+        profile.last_name = request.POST.get('last_name')
+        profile.bio = request.POST.get('bio')
+        
+        # Handle profile image
+        if 'image_profile' in request.FILES:
+            profile.image_profile = request.FILES['image_profile']
+            
+        profile.save()
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('my_profile')
+        
+    return render(request, 'edit_profile.html', {'profile': profile})
+

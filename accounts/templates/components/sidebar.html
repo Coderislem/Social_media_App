@@ -14,10 +14,14 @@
             <i>✉️</i>
             Messages
         </a>
-        <a href="" class="nav-item">
+        <a href="{% url 'notifications' %}" class="nav-item notification-container">
             <i>🔔</i>
             Notifications
+            {% if unread_notifications > 0 %}
+                <span class="notification-badge">{{ unread_notifications }}</span>
+            {% endif %}
         </a>
+        
         <a href="{% url 'people_list' %}" class="nav-item">
             <i>👥</i>
             People
@@ -156,6 +160,21 @@
 .file-label:hover {
     background: #e4e6eb;
 }
+.notification-badge {
+    background: #ff3040;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 18px;
+    height: 18px;
+    text-align: center;
+    line-height: 14px;
+    font-weight: bold;
+}
 
 .image-preview {
     width: 100%;
@@ -226,11 +245,12 @@
 .nav-item {
     display: flex;
     align-items: center;
-    padding: 10px 15px;
-    margin-bottom: 10px;
+    padding: 12px 20px;
     text-decoration: none;
     color: #333;
     transition: background 0.2s;
+    border-radius: 8px;
+    margin-bottom: 5px;
 }
 
 .nav-item:hover {
@@ -238,7 +258,8 @@
 }
 
 .nav-item i {
-    margin-right: 10px;
+    margin-right: 12px;
+    font-size: 20px;
 }
 
 .search-form {
@@ -270,6 +291,12 @@
 
 .search-btn:hover {
     color: #0095f6;
+}
+
+.notification-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
 }
 
 /* Add responsive adjustments */

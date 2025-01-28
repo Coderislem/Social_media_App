@@ -1,4 +1,10 @@
 /* static/css/auth.css */
+:root {
+    --primary-color: #ff1493;
+    --primary-light: #ff69b4;
+    --primary-dark: #c71585;
+}
+
 .auth-container {
     min-height: 100vh;
     background: linear-gradient(to right, #4a90e2, #63b3ed);
@@ -50,27 +56,31 @@
 }
 
 .auth-button {
-    width: 100%;
-    padding: 12px;
-    background: #4a90e2;
+    background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 8px;
-    font-weight: 600;
+    padding: 12px;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 16px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.3s;
 }
 
 .auth-button:hover {
-    background: #357abd;
+    background: var(--primary-dark);
 }
 
 .auth-link {
     display: block;
     text-align: center;
     margin-top: 20px;
-    color: #4a90e2;
+    color: var(--primary-color);
     text-decoration: none;
+}
+
+.auth-link:hover {
+    color: var(--primary-dark);
 }
 
 .error-message {
@@ -91,4 +101,14 @@
     font-size: 12px;
     color: #718096;
     margin-top: 4px;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 30px;
+    font-family: 'Arial', sans-serif;
+    letter-spacing: 1px;
 }
